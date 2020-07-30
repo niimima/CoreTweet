@@ -105,7 +105,11 @@ namespace CoreTweet
         internal static HttpWebResponse HttpPost(Uri url, string contentType, byte[] content, string authorizationHeader, ConnectionOptions options)
         {
             if (options == null) options = ConnectionOptions.Default;
-            var req = (HttpWebRequest)WebRequest.Create(url);
+#if NET45
+            ServicePointManager.SecurityProtocol =
+					SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
+#endif
+			var req = (HttpWebRequest)WebRequest.Create(url);
             req.ServicePoint.Expect100Continue = false;
             req.Method = "POST";
             req.Timeout = options.Timeout;
